@@ -4,7 +4,7 @@
    </span>
 </p>
 
-# Airflow Study Project — Classic Models ETL
+# Airflow Study Project — TaskGroups, TaskFlow API, Branching, Good Practices, Operators, XCom, Variables, Connections, etc.
 
 This repository is a hands-on study project to learn and practice Apache Airflow fundamentals and good practices using a small end-to-end ETL pipeline.
 
