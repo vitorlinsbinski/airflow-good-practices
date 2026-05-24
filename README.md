@@ -24,6 +24,7 @@ The project orchestrates:
 - **Airflow Variables**: dynamic configuration (S3 bucket name)
 - **Airflow Connections**: decoupled credentials/endpoints for MySQL and AWS
 - **XCom**: push/pull the number of valid records per table
+- **Branching**: conditional paths in the DAG (`@task.branch` / `BranchPythonOperator`)
 - **Providers / Operators**: `SqlToS3Operator` (Amazon provider) for extraction
 
 ## Project structure
@@ -112,5 +113,34 @@ This is intentionally simple: the goal is to practice orchestration patterns (in
 - How to separate **configuration from code** using Airflow **Variables** and **Connections** (and why hard-coding secrets is a bad idea).
 - How the **TaskFlow API** improves readability and testability compared to monolithic operator-only DAGs.
 - How to use **XCom** intentionally to pass _small metadata_ (record counts), not large datasets.
+- How to implement **branches** (conditional paths) and handle `skipped` tasks using `trigger_rule`.
 - How to think in terms of **data layers** (bronze/silver) and partitioning by execution date (`ds`).
 - The importance of **idempotent tasks** (e.g., writing outputs with `replace=True`) to make backfills and retries safer.
+
+## Branching (branches) in Airflow
+
+Branching is the pattern where a task decides which downstream path(s) should run.
+
+### TaskFlow API (`@task.branch`)
+
+- A `@task.branch` function must return the **`task_id`** (string) of the next task to run (or a list of task IDs).
+- Non-selected downstream tasks are automatically marked as **`skipped`** for that DAG run.
+- When you need to “join” after a branch, use a task with a permissive trigger rule such as:
+   - `trigger_rule="none_failed_min_one_success"`
+
+Example DAG: `dags/branch_operator_taskflow_api_dag.py`.
+
+**Note about the Graph view:**
+If you pass outputs between tasks as function arguments (TaskFlow style), the UI may show direct dependencies like
+`extract_data -> print_case_less_half` in addition to the branch links. This is normal: Airflow is visualizing both the
+control-flow dependency (branch) and the data dependency (XComArg input).
+
+### Traditional approach (operators)
+
+The classic (pre-TaskFlow) approach uses:
+
+- `PythonOperator` for Python callables
+- `BranchPythonOperator` to choose the next `task_id`
+- XCom explicitly via `ti.xcom_push()` / `ti.xcom_pull()`
+
+Example DAG: `dags/branch_operator_traditional_dag.py`.
