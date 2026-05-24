@@ -1,0 +1,52 @@
+### Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+### Virtual environments
+.venv/
+venv/
+env/
+.env/
+
+### Packaging / build
+build/
+dist/
+*.egg-info/
+.eggs/
+
+### Tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+### IDE / OS
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+### Airflow
+# Logs can be huge and are environment-specific
+logs/
+
+# Local databases/state (commonly created when using SequentialExecutor locally)
+airflow.db
+airflow.db-wal
+airflow.db-shm
+webserver_config.py
+
+# Runtime artifacts
+airflow-webserver.pid
+
+### Docker / compose
+*.log
+
+### Secrets 
+.env.*
+!.env.example
+secrets/
