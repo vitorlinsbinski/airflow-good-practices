@@ -130,6 +130,10 @@ Branching is the pattern where a task decides which downstream path(s) should ru
 
 Example DAG: `dags/branch_operator_taskflow_api_dag.py`.
 
+### DAG screenshot
+
+![classic_models_dag graph view](assets/dag_screenshot_2.png)
+
 **Note about the Graph view:**
 If you pass outputs between tasks as function arguments (TaskFlow style), the UI may show direct dependencies like
 `extract_data -> print_case_less_half` in addition to the branch links. This is normal: Airflow is visualizing both the
